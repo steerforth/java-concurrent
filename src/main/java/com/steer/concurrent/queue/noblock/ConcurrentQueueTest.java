@@ -1,13 +1,16 @@
-package com.steer.concurrent.queue;
+package com.steer.concurrent.queue.noblock;
 
+import java.util.Iterator;
 import java.util.Queue;
-import java.util.concurrent.ConcurrentLinkedDeque;
+import java.util.concurrent.*;
 
 public class ConcurrentQueueTest {
 
-    public static void QueueAddAndRemoveTest(){
 
+    public static void QueueAddAndRemoveTest(){
         Queue queue = new ConcurrentLinkedDeque();
+        Object a = queue.poll();
+        assert a == null ? true :false;
         queue.add("i am no.1");
         queue.add("i am no.2");
         queue.add("i am no.3");
@@ -16,11 +19,11 @@ public class ConcurrentQueueTest {
         System.out.println("Currently the no.1 of the queue is："+((ConcurrentLinkedDeque) queue).getFirst());
         System.out.println("Currently the last of the queue is："+((ConcurrentLinkedDeque) queue).getLast());
         System.out.println("the size of the queue is:"+queue.size());
-        //向队列尾部插入数据
+        //向队列尾部插入数据,队列个数会增加
         queue.offer("i am no.4");
         System.out.println("After offering,Currently the last of the queue is:"+((ConcurrentLinkedDeque) queue).getLast());
         System.out.println("the size of the queue is:"+queue.size());
-        //从队列尾部取出数据
+        //从队列尾部取出数据,队列个数会减少
         String obj = (String) queue.poll();
         System.out.println("poll value:"+obj);
         System.out.println("After polling,Currently the last of the queue is:"+((ConcurrentLinkedDeque) queue).getLast());
@@ -42,9 +45,52 @@ public class ConcurrentQueueTest {
         System.out.println("After removing again,Currently the last of the queue is:"+((ConcurrentLinkedDeque) queue).getLast());
         System.out.println("After removing again,the size of the queue is:"+queue.size());
 
+
+        for (Iterator iterator = queue.iterator();iterator.hasNext();){
+            System.out.println("In the queue,"+iterator.next().toString());
+        }
     }
+
+    /**
+     * poll可能会获取到null
+     */
+    public static void currentTest(){
+//        ScheduledThreadPoolExecutor dataLoadExcutor = new ScheduledThreadPoolExecutor(2,
+//                new BasicThreadFactory.Builder().namingPattern("gabriel-msg-schedule-pool-%d").daemon(false).build());
+
+
+//        ThreadFactory namedThreadFactory = new ThreadFactoryBuilder()
+//                .setNameFormat("demo-pool-%d").build();
+//
+//        //Common Thread Pool
+//        ExecutorService pool = new ThreadPoolExecutor(5, 200,
+//                0L, TimeUnit.MILLISECONDS,
+//                new LinkedBlockingQueue<Runnable>(1024), namedThreadFactory, new ThreadPoolExecutor.AbortPolicy());
+//
+//        pool.execute(()-> System.out.println(Thread.currentThread().getName()));
+//        pool.shutdown();//gracefully shutdown
+
+        ConcurrentLinkedQueue<Integer> concurrentLinkedQueue = new ConcurrentLinkedQueue<Integer>();
+        ExecutorService service = Executors.newFixedThreadPool(2);
+        service.submit(new Producer(concurrentLinkedQueue,"producer-1"));
+        service.submit(new Producer(concurrentLinkedQueue,"producer-2"));
+        service.submit(new Producer(concurrentLinkedQueue,"producer-3"));
+
+//        try {
+//            Thread.sleep(2000);
+//        } catch (InterruptedException e) {
+//            e.printStackTrace();
+//        }
+
+        service.submit(new Consumer(concurrentLinkedQueue,"consumer-1"));
+        service.submit(new Consumer(concurrentLinkedQueue,"consumer-2"));
+        service.submit(new Consumer(concurrentLinkedQueue,"consumer-3"));
+        service.shutdown();
+    }
+
 
     public static void main(String[] args) {
         QueueAddAndRemoveTest();
+        currentTest();
     }
 }
