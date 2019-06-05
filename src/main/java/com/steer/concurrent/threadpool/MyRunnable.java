@@ -6,7 +6,7 @@ public class MyRunnable implements Runnable {
     public MyRunnable(int idx) {
         this.idx = idx;
     }
-
+    @Override
     public void run() {
         System.out.println(Thread.currentThread().getName()+"我是"+idx);
         try {
