@@ -1,6 +1,11 @@
 package com.steer.concurrent.threadpool;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 public class MyRunnable implements Runnable {
+    private Logger LOGGER = LoggerFactory.getLogger(MyRunnable.class);
+
     private int idx;
 
     public MyRunnable(int idx) {
@@ -8,9 +13,9 @@ public class MyRunnable implements Runnable {
     }
     @Override
     public void run() {
-        System.out.println(Thread.currentThread().getName()+"我是"+idx);
+        LOGGER.info("我是{}",idx);
         try {
-            Thread.sleep(300);
+            Thread.sleep(2000);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
