@@ -2,6 +2,7 @@ package com.steer.concurrent.threadpool;
 
 import com.google.common.util.concurrent.ThreadFactoryBuilder;
 import org.apache.commons.lang3.concurrent.BasicThreadFactory;
+import org.junit.Assert;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -31,7 +32,7 @@ public class ThreadPoolTest {
         /**
          * corePoolSize:执行任务的线程
          * maximumPoolSize: 线程池最大允许的执行线程数量
-         * keepAliveTime: 超过corePoolSize的线程，空闲线程存活时间，线程没有任务执行时最多保持多久时间
+         * keepAliveTime: 超过corePoolSize的线程，空闲线程存活时间；allowCoreThreadTimeOut(boolean)设为true，corePoolSize的线程也会受影响
          * 缓冲队列大小：大于corePoolSize的任务会放在缓冲队列中，
          * 所以值大于等于任务数-最大线程池数
          * ArrayBlockingQueue
@@ -73,16 +74,73 @@ public class ThreadPoolTest {
 
     /**
      * 延迟2秒，周期1秒，
+     * 执行任务的时间大于设置的周期时间，下一次的循环的执行任务会立马执行
      * 循环执行任务
      */
     @Test
     public void scheduledExecutorAtFixedRateTest() throws InterruptedException {
         ScheduledExecutorService scheduler = new ScheduledThreadPoolExecutor(4,new BasicThreadFactory.Builder().namingPattern("mythread").daemon(false).build());
-        scheduler.scheduleAtFixedRate(new MyRunnable(1),2,1,TimeUnit.SECONDS);
-        Thread.sleep(5000);
-//		scheduler.shutdown();
-//		scheduler.shutdownNow();
+        scheduler.scheduleAtFixedRate(new MyRunnable(1),1,3,TimeUnit.SECONDS);
+        Thread.sleep(200000);
     }
 
+    /**
+     * 等任务执行完后才延迟时间执行下一次
+     * 循环执行任务
+     * @throws InterruptedException
+     */
+    @Test
+    public void scheduledExecutorWithFixedDelayTest() throws InterruptedException {
+        ScheduledExecutorService scheduler = new ScheduledThreadPoolExecutor(4,new BasicThreadFactory.Builder().namingPattern("mythread").daemon(false).build());
+        scheduler.scheduleWithFixedDelay(new MyRunnable(1),1,2,TimeUnit.SECONDS);
+        Thread.sleep(200000);
+    }
 
+    @Test
+    public void CustomRejectedExecutionHandlerTest(){
+        try {
+            ExecutorService pool = new ThreadPoolExecutor(2,2,0L, TimeUnit.SECONDS,new LinkedBlockingQueue<>(1),new ThreadFactoryBuilder().setNameFormat("mythread-%d").build(),new MyRejectedExecutionHandler());
+            for (int i = 0; i <5; i++) {
+                pool.execute(new MyRunnable(i));
+            }
+        }catch (RejectedExecutionException e){
+            LOGGER.error(e.getMessage());
+            Assert.assertEquals(RejectedExecutionException.class,e.getClass());
+        }
+    }
+
+    /**
+     * 未处理
+     * @throws InterruptedException
+     */
+//    @Test
+//    public void AutoAdjustThreadPoolTest() throws InterruptedException {
+//        AutoAdjustThreadPool pool = new AutoAdjustThreadPool();
+//        pool.start(2,100,"自动",2);
+//        for (int i = 0; i < 8; i++) {
+//            pool.submit(new MyReapeatRunnable(i));
+//            Thread.sleep(1000);
+//        }
+//        Thread.sleep(200000);
+//    }
+
+    /**
+     * 任务为死循环，
+     * 任务多余corePoolSize，多余的任务放在队列中等待执行
+     * @throws InterruptedException
+     */
+    @Test
+    public void manualAdjustThreadPoolTest() throws InterruptedException {
+        ThreadPoolExecutor pool = new ThreadPoolExecutor(2,2,60L, TimeUnit.MILLISECONDS,new LinkedBlockingQueue<>(20),new ThreadFactoryBuilder().setNameFormat(new StringBuilder().append("manual-pool-").append("-%d").toString()).build());
+        for (int i = 0; i < 8; i++) {
+            pool.submit(new MyReapeatRunnable(i));
+        }
+        //动态增加线程池
+        for (int i = 3; i <= 8; i++) {
+            Thread.sleep(3000);
+            pool.setCorePoolSize(i);
+            pool.setMaximumPoolSize(i);
+        }
+        Thread.sleep(200000);
+    }
 }

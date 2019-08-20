@@ -13,11 +13,12 @@ public class MyRunnable implements Runnable {
     }
     @Override
     public void run() {
-        LOGGER.info("我是{}",idx);
+        LOGGER.info("我是{},开始",idx);
         try {
-            Thread.sleep(2000);
+            Thread.sleep(4000);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
+        LOGGER.info("我是{},结束",idx);
     }
 }
