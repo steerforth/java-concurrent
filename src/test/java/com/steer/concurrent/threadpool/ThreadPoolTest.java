@@ -7,6 +7,7 @@ import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.IOException;
 import java.util.concurrent.*;
 
 public class ThreadPoolTest {
@@ -66,10 +67,11 @@ public class ThreadPoolTest {
      * 延迟执行，只执行1次任务
      */
     @Test
-    public void scheduledExecutorServiceTest() throws InterruptedException {
+    public void scheduledExecutorServiceTest() throws IOException {
         ScheduledExecutorService scheduler = new ScheduledThreadPoolExecutor(4,new BasicThreadFactory.Builder().namingPattern("mythread").daemon(false).build());
         scheduler.schedule(new MyRunnable(1),1, TimeUnit.SECONDS);
-        Thread.sleep(5000);
+        //阻塞主线程
+        System.in.read();
     }
 
     /**
@@ -78,10 +80,11 @@ public class ThreadPoolTest {
      * 循环执行任务
      */
     @Test
-    public void scheduledExecutorAtFixedRateTest() throws InterruptedException {
+    public void scheduledExecutorAtFixedRateTest() throws IOException {
         ScheduledExecutorService scheduler = new ScheduledThreadPoolExecutor(4,new BasicThreadFactory.Builder().namingPattern("mythread").daemon(false).build());
         scheduler.scheduleAtFixedRate(new MyRunnable(1),1,3,TimeUnit.SECONDS);
-        Thread.sleep(200000);
+        //阻塞主线程
+        System.in.read();
     }
 
     /**
@@ -90,10 +93,11 @@ public class ThreadPoolTest {
      * @throws InterruptedException
      */
     @Test
-    public void scheduledExecutorWithFixedDelayTest() throws InterruptedException {
+    public void scheduledExecutorWithFixedDelayTest() throws IOException {
         ScheduledExecutorService scheduler = new ScheduledThreadPoolExecutor(4,new BasicThreadFactory.Builder().namingPattern("mythread").daemon(false).build());
         scheduler.scheduleWithFixedDelay(new MyRunnable(1),1,2,TimeUnit.SECONDS);
-        Thread.sleep(200000);
+        //阻塞主线程
+        System.in.read();
     }
 
     @Test
@@ -130,7 +134,7 @@ public class ThreadPoolTest {
      * @throws InterruptedException
      */
     @Test
-    public void manualAdjustThreadPoolTest() throws InterruptedException {
+    public void manualAdjustThreadPoolTest() throws InterruptedException, IOException {
         ThreadPoolExecutor pool = new ThreadPoolExecutor(2,2,60L, TimeUnit.MILLISECONDS,new LinkedBlockingQueue<>(20),new ThreadFactoryBuilder().setNameFormat(new StringBuilder().append("manual-pool-").append("-%d").toString()).build());
         for (int i = 0; i < 8; i++) {
             pool.submit(new MyReapeatRunnable(i));
@@ -141,6 +145,7 @@ public class ThreadPoolTest {
             pool.setCorePoolSize(i);
             pool.setMaximumPoolSize(i);
         }
-        Thread.sleep(200000);
+        //阻塞主线程
+        System.in.read();
     }
 }
