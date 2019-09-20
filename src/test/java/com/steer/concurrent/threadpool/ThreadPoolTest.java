@@ -20,7 +20,7 @@ public class ThreadPoolTest {
      */
 
     /**
-     * 当线程池和缓冲队列都北塞满了任务，但还有新的任务时，就会执行拒绝策略
+     * 当线程池和缓冲队列都被塞满了任务，但还有新的任务时，就会执行拒绝策略
      * 即执行的任务数量大于（最大线程池大小+缓冲队列大小）
      * 线程池的几种拒绝策略：
      * ThreadPoolExecutor.AbortPolicy:丢弃任务并抛出RejectedExecutionException
@@ -145,6 +145,7 @@ public class ThreadPoolTest {
             pool.setCorePoolSize(i);
             pool.setMaximumPoolSize(i);
         }
+
         //阻塞主线程
         System.in.read();
     }
