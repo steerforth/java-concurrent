@@ -8,7 +8,9 @@ import java.util.concurrent.locks.ReentrantLock;
 
 public class AtomicTest implements Runnable{
     private static int i;
-
+    /**
+     * volatile修饰的变量，保证了多个线程在调用这个变量时，都是从主内存中读取的，即是最新的值，但不能保证多线程执行的有序性，即不能保证并发的正确性，不同于synchronized
+     */
     private static volatile Integer vi = 0;
 
     private static AtomicInteger ai = new AtomicInteger();
