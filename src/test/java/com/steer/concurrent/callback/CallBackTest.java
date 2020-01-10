@@ -20,7 +20,6 @@ public class CallBackTest {
         ExecutorService pool = new ThreadPoolExecutor(40,100,0L, TimeUnit.SECONDS,new LinkedBlockingQueue<>(100),new ThreadFactoryBuilder().setNameFormat("mythread-%d").build(),new MyRejectedExecutionHandler());
         for (int i = 0; i <40; i++) {
             IRunnable runnable = new IRunnable();
-            runnable.setCallback(new SuperCallBack());
             pool.execute(runnable);
         }
 
