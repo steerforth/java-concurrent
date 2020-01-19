@@ -149,4 +149,30 @@ public class ThreadPoolTest {
         //阻塞主线程
         System.in.read();
     }
+
+    /**
+     * 等待线程池任务全部执行完毕后，再做工作
+     * @throws IOException
+     */
+    @Test
+    public void scheduledExecutorServiceAllDoneTest() throws IOException {
+        ScheduledExecutorService scheduler = new ScheduledThreadPoolExecutor(4,new BasicThreadFactory.Builder().namingPattern("mythread").daemon(false).build());
+        for (int i = 0; i < 10; i++) {
+            scheduler.schedule(new MyRunnable(1),1, TimeUnit.SECONDS);
+        }
+        //停止接收新的任务
+        scheduler.shutdown();
+
+        try {
+            //每隔200毫秒检测一下
+            while (!scheduler.awaitTermination(200, TimeUnit.MILLISECONDS)) {
+
+            }
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
+        LOGGER.info("=====任务全部执行完毕=======");
+
+    }
 }

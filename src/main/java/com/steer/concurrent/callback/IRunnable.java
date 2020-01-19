@@ -17,6 +17,7 @@ public class IRunnable implements Runnable{
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
+        callback = new SuperCallBack();
         callback.callBack(Thread.currentThread().getName());
         logger.info("执行完毕耗时任务");
     }
