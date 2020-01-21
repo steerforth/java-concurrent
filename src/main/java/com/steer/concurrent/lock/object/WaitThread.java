@@ -1,4 +1,4 @@
-package com.steer.concurrent.lock;
+package com.steer.concurrent.lock.object;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -19,7 +19,7 @@ public class WaitThread implements Runnable{
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
-            LOGGER.info("收到开锁通知，开始做事情");
+            LOGGER.info("收到notify开锁通知，开始做事情");
         }
     }
 }

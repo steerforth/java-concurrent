@@ -1,4 +1,4 @@
-package com.steer.concurrent.lock;
+package com.steer.concurrent.lock.reentrant;
 
 import org.junit.Test;
 import org.slf4j.Logger;
@@ -6,7 +6,6 @@ import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.util.concurrent.locks.Condition;
-import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
 /**

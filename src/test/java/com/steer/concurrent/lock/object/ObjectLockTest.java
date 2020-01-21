@@ -1,5 +1,7 @@
-package com.steer.concurrent.lock;
+package com.steer.concurrent.lock.object;
 
+import com.steer.concurrent.lock.object.NotifyThread;
+import com.steer.concurrent.lock.object.WaitThread;
 import org.junit.Test;
 
 import java.io.IOException;

@@ -1,4 +1,4 @@
-package com.steer.concurrent.lock;
+package com.steer.concurrent.lock.reentrantLock;
 
 import java.util.concurrent.locks.Condition;
 

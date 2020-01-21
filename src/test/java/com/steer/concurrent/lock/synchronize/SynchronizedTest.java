@@ -1,4 +1,4 @@
-package com.steer.concurrent.lock;
+package com.steer.concurrent.lock.synchronize;
 
 import com.google.common.util.concurrent.ThreadFactoryBuilder;
 import org.junit.Test;

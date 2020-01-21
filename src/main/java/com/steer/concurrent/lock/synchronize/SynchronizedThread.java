@@ -1,4 +1,4 @@
-package com.steer.concurrent.lock;
+package com.steer.concurrent.lock.synchronize;
 
 public class SynchronizedThread  implements Runnable{
     private static int a = 0;

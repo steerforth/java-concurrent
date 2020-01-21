@@ -1,4 +1,4 @@
-package com.steer.concurrent.lock;
+package com.steer.concurrent.lock.object;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
