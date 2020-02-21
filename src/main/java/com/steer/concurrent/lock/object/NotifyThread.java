@@ -16,15 +16,15 @@ public class NotifyThread implements Runnable {
     public void run() {
 
         synchronized (lock){
-            LOGGER.info("做一些事情");
+            LOGGER.info("notify做一些事情");
             try {
                 Thread.sleep(3000);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
-            LOGGER.info("开始通知");
+            LOGGER.info("notify开始通知");
             lock.notify();
-            LOGGER.info("结束通知");
+            LOGGER.info("notify结束通知");
         }
     }
 }

@@ -13,13 +13,13 @@ public class WaitThread implements Runnable{
     @Override
     public void run() {
         synchronized (lock){
-            LOGGER.info("我在等候");
+            LOGGER.info("wait在等候");
             try {
                 lock.wait();
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
-            LOGGER.info("收到notify开锁通知，开始做事情");
+            LOGGER.info("wait收到lock notify通知，可以开始做事情");
         }
     }
 }
