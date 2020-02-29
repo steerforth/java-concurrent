@@ -276,6 +276,11 @@ public abstract class AbstractFuture<V> implements IFuture<V> {
         return true;
     }
 
+    /**
+     * 设置返回结果，通过Object.notifyAll()取消Object.wait()
+     * @param result
+     * @return
+     */
     protected IFuture<V> setSuccess(Object result) {
         if (setSuccess0(result)) { // 设置成功后通知监听器
             notifyListeners();
