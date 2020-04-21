@@ -1,11 +1,16 @@
 package com.steer.concurrent.lock.reentrant;
 
+import com.steer.concurrent.lock.reentrantLock.T_ReentrantLock;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
+import java.util.concurrent.BrokenBarrierException;
+import java.util.concurrent.CyclicBarrier;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.Condition;
+import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
 /**
@@ -31,6 +36,73 @@ public class ReentrantLockTest {
         producer.start();
         System.in.read();
 
+    }
+
+    @Test
+    public void testFairLock() throws IOException {
+        new Thread(new T_ReentrantLock()).start();
+        new Thread(new T_ReentrantLock()).start();
+        System.in.read();
+    }
+
+    @Test
+    public void testCyclicBarrier(){
+        CyclicBarrier barrier = new CyclicBarrier(20,()->{
+            LOGGER.info("满人");
+        });
+
+        for (int i = 0; i < 100; i++) {
+            new Thread(()->{
+                try {
+                    LOGGER.info("-----");
+                    //执行了20次到这里，然后20个执行后面的方法
+                    barrier.await();
+                    LOGGER.info("=====");
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                } catch (BrokenBarrierException e) {
+                    e.printStackTrace();
+                }
+            }).start();
+        }
+    }
+
+
+    @Test
+    public void testLockInterruptibly() throws IOException, InterruptedException {
+        Lock lock = new ReentrantLock();
+        new Thread(()->{
+            try {
+                lock.lock();
+                LOGGER.info("t1 start");
+                TimeUnit.SECONDS.sleep(Integer.MAX_VALUE);
+                LOGGER.info("t1 end");
+            }catch (InterruptedException e){
+                LOGGER.info("t1 interrupted!");
+            }finally {
+                lock.unlock();
+            }
+        }).start();
+
+        Thread t2 = new Thread(()->{
+            try {
+                lock.lockInterruptibly();
+                LOGGER.info("t2 start");
+                TimeUnit.SECONDS.sleep(5);
+                LOGGER.info("t2 end");
+            }catch (InterruptedException e){
+                LOGGER.info("t2 interrupted!");
+            }finally {
+                lock.unlock();
+            }
+        });
+        t2.start();
+
+        TimeUnit.SECONDS.sleep(5);
+
+        t2.interrupt();
+
+        System.in.read();
     }
 
     class Consumer extends Thread{
