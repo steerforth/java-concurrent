@@ -1,4 +1,4 @@
-package com.steer.concurrent.latch;
+package com.steer.concurrent.jucTool;
 
 import com.google.common.util.concurrent.ThreadFactoryBuilder;
 import org.junit.Test;
@@ -11,8 +11,11 @@ import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
-public class LatchTest {
-    private Logger LOGGER = LoggerFactory.getLogger(LatchTest.class);
+/**
+ * 门栓
+ */
+public class CountDownLatchTest {
+    private Logger LOGGER = LoggerFactory.getLogger(CountDownLatchTest.class);
 
     private final CountDownLatch latch = new CountDownLatch(1);
     @Test
