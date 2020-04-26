@@ -1,13 +1,23 @@
 package com.steer.concurrent.queue.noblock;
 
+import org.junit.Test;
+
 import java.util.Iterator;
 import java.util.Queue;
-import java.util.concurrent.*;
+import java.util.concurrent.ConcurrentLinkedDeque;
+import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
-public class ConcurrentQueueTest {
+/**
+ * 双向链表结构的无界并发队列
+ *
+ * 该阻塞队列同时支持FIFO和FILO两种操作方式
+ */
+public class ConcurrentLinkedDequeTest {
 
-
-    public static void QueueAddAndRemoveTest(){
+    @Test
+    public void test(){
         Queue queue = new ConcurrentLinkedDeque();
         Object a = queue.poll();
         assert a == null ? true :false;
@@ -46,51 +56,29 @@ public class ConcurrentQueueTest {
         System.out.println("After removing again,the size of the queue is:"+queue.size());
 
 
-        for (Iterator iterator = queue.iterator();iterator.hasNext();){
+        for (Iterator iterator = queue.iterator(); iterator.hasNext();){
             System.out.println("In the queue,"+iterator.next().toString());
         }
     }
 
-    /**
-     * poll可能会获取到null
-     */
-    public static void currentTest(){
-//        ScheduledThreadPoolExecutor dataLoadExcutor = new ScheduledThreadPoolExecutor(2,
-//                new BasicThreadFactory.Builder().namingPattern("gabriel-msg-schedule-pool-%d").daemon(false).build());
 
-
-//        ThreadFactory namedThreadFactory = new ThreadFactoryBuilder()
-//                .setNameFormat("demo-pool-%d").build();
-//
-//        //Common Thread Pool
-//        ExecutorService pool = new ThreadPoolExecutor(5, 200,
-//                0L, TimeUnit.MILLISECONDS,
-//                new LinkedBlockingQueue<Runnable>(1024), namedThreadFactory, new ThreadPoolExecutor.AbortPolicy());
-//
-//        pool.execute(()-> System.out.println(Thread.currentThread().getName()));
-//        pool.shutdown();//gracefully shutdown
-
+    @Test
+    public void testConcurrent(){
         ConcurrentLinkedQueue<Integer> concurrentLinkedQueue = new ConcurrentLinkedQueue<Integer>();
         ExecutorService service = Executors.newFixedThreadPool(2);
         service.submit(new Producer(concurrentLinkedQueue,"producer-1"));
         service.submit(new Producer(concurrentLinkedQueue,"producer-2"));
         service.submit(new Producer(concurrentLinkedQueue,"producer-3"));
 
-//        try {
-//            Thread.sleep(2000);
-//        } catch (InterruptedException e) {
-//            e.printStackTrace();
-//        }
+        try {
+            Thread.sleep(2000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
 
         service.submit(new Consumer(concurrentLinkedQueue,"consumer-1"));
         service.submit(new Consumer(concurrentLinkedQueue,"consumer-2"));
         service.submit(new Consumer(concurrentLinkedQueue,"consumer-3"));
         service.shutdown();
-    }
-
-
-    public static void main(String[] args) {
-        QueueAddAndRemoveTest();
-        currentTest();
     }
 }

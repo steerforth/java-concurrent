@@ -6,6 +6,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
+import java.nio.ByteBuffer;
 import java.util.concurrent.BrokenBarrierException;
 import java.util.concurrent.CyclicBarrier;
 import java.util.concurrent.TimeUnit;
@@ -27,7 +28,7 @@ public class ReentrantLockTest {
     final Condition condition = lock.newCondition();
 
     @Test
-    public void test() throws IOException {
+    public void testLockCondition() throws IOException {
 
         Producer producer = new Producer();
         Consumer consumer = new Consumer();
