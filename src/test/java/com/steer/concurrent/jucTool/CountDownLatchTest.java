@@ -13,6 +13,8 @@ import java.util.concurrent.TimeUnit;
 
 /**
  * 门栓
+ *  缺点:计数器只能使用一次
+ * 可以让线程顺序执行任务
  */
 public class CountDownLatchTest {
     private Logger LOGGER = LoggerFactory.getLogger(CountDownLatchTest.class);

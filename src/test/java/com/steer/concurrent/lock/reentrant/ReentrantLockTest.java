@@ -34,6 +34,11 @@ public class ReentrantLockTest {
         Consumer consumer = new Consumer();
 
         consumer.start();
+        try {
+            Thread.sleep(100);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
         producer.start();
         System.in.read();
 
@@ -45,29 +50,6 @@ public class ReentrantLockTest {
         new Thread(new T_ReentrantLock()).start();
         System.in.read();
     }
-
-    @Test
-    public void testCyclicBarrier(){
-        CyclicBarrier barrier = new CyclicBarrier(20,()->{
-            LOGGER.info("满人");
-        });
-
-        for (int i = 0; i < 100; i++) {
-            new Thread(()->{
-                try {
-                    LOGGER.info("-----");
-                    //执行了20次到这里，然后20个执行后面的方法
-                    barrier.await();
-                    LOGGER.info("=====");
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                } catch (BrokenBarrierException e) {
-                    e.printStackTrace();
-                }
-            }).start();
-        }
-    }
-
 
     @Test
     public void testLockInterruptibly() throws IOException, InterruptedException {
@@ -149,7 +131,7 @@ public class ReentrantLockTest {
                 LOGGER.info("Producer获取到锁");
 
                 LOGGER.info("Producer通知consumer");
-                condition.signalAll();
+                condition.signal();
                 Thread.sleep(300);
             } catch (InterruptedException e) {
                 e.printStackTrace();
