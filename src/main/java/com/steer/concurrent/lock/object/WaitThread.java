@@ -12,9 +12,11 @@ public class WaitThread implements Runnable{
     }
     @Override
     public void run() {
+        //未获取到lock对象的锁的线程会进入该lock对象的锁池中
         synchronized (lock){
             LOGGER.info("wait在等候");
             try {
+                //调用wait的线程会进入该对象的等待池中
                 lock.wait();
             } catch (InterruptedException e) {
                 e.printStackTrace();
