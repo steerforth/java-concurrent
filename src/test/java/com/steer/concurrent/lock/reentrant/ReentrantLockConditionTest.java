@@ -54,13 +54,14 @@ public class ReentrantLockConditionTest {
             log.info("进货了一本书，剩余:{}",books.size());
             buyCondition.signal();  //通知买家买书
             lock.unlock();
+            log.info("售货员释放锁");
         }
 
         public void removeBook() {
             lock.lock();
             while (books.size() <= 0) {
                 try {
-                    log.info("买家[{}]等待购入图书",Thread.currentThread().getName());
+                    log.info("买家[{}]等待购入图书,释放锁进入条件等待队列",Thread.currentThread().getName());
                     buyCondition.await();  //买家等待书店进书
                 } catch (InterruptedException e) {
                     e.printStackTrace();
@@ -75,6 +76,7 @@ public class ReentrantLockConditionTest {
             log.info("买家[{}]购入了一本书，剩余:{}",Thread.currentThread().getName(),books.size());
             sellCondition.signal();  //通知售货员进书
             lock.unlock();
+            log.info("买家释放锁");
         }
     }
 
