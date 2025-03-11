@@ -6,7 +6,7 @@ import org.slf4j.LoggerFactory;
 public class NotifyThread implements Runnable {
 
     private Logger LOGGER = LoggerFactory.getLogger(NotifyThread.class);
-    private Object lock;
+    private final Object lock;
 
     public NotifyThread(Object lock) {
         this.lock = lock;

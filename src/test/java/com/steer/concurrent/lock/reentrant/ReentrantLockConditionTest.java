@@ -37,6 +37,7 @@ public class ReentrantLockConditionTest {
         private Condition sellCondition = lock.newCondition();
         public void addBook() {
             lock.lock();
+            log.info("售货员[{}]获取到锁",Thread.currentThread().getName());
             while (books.size() >= 1) {
                 try {
                     log.info("售货员等待图书售出");
@@ -59,6 +60,7 @@ public class ReentrantLockConditionTest {
 
         public void removeBook() {
             lock.lock();
+            log.info("买家[{}]获取到锁",Thread.currentThread().getName());
             while (books.size() <= 0) {
                 try {
                     log.info("买家[{}]等待购入图书,释放锁进入条件等待队列",Thread.currentThread().getName());

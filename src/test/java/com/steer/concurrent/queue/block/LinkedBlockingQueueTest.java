@@ -4,6 +4,7 @@ import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.IOException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.LinkedBlockingQueue;
@@ -22,7 +23,7 @@ public class LinkedBlockingQueueTest {
      * poll可能会获取到null
      */
     @Test
-    public void test(){
+    public void test() throws IOException {
         LinkedBlockingQueue<Integer> linkedBlockingQueue = new LinkedBlockingQueue<>();
         ExecutorService service = Executors.newFixedThreadPool(2);
         service.submit(new Producer(linkedBlockingQueue,"producer-1"));
@@ -39,5 +40,7 @@ public class LinkedBlockingQueueTest {
         service.submit(new Consumer(linkedBlockingQueue,"consumer-2"));
         service.submit(new Consumer(linkedBlockingQueue,"consumer-3"));
         service.shutdown();
+
+        System.in.read();
     }
 }

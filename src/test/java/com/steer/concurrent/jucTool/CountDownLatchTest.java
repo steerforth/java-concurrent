@@ -32,17 +32,17 @@ public class CountDownLatchTest {
                 e.printStackTrace();
             }
             LOGGER.info("第1个任务执行完毕，释放锁");
-            latch.countDown();
+            latch.countDown();//计数器归零时，所有await等待的线程会被唤醒
         });
 
         executor.execute(()->{
             LOGGER.info("等待执行第2个任务");
             try {
-                latch.await();
+                latch.await();//
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
-            LOGGER.info("开始执行第2个任务");
+            LOGGER.info("开始执行第2个任务");//2,3任务是并发执行的
             try {
                 Thread.sleep(1000);
             } catch (InterruptedException e) {
@@ -55,11 +55,11 @@ public class CountDownLatchTest {
         executor.execute(()->{
             LOGGER.info("等待执行第3个任务");
             try {
-                latch.await();
+                latch.await();//
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
-            LOGGER.info("开始执行第3个任务");
+            LOGGER.info("开始执行第3个任务");//2,3任务是并发执行的
             try {
                 Thread.sleep(1000);
             } catch (InterruptedException e) {

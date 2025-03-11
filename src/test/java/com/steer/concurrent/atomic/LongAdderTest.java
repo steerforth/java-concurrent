@@ -1,8 +1,10 @@
 package com.steer.concurrent.atomic;
 
+import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.IOException;
 import java.util.concurrent.atomic.LongAdder;
 
 public class LongAdderTest {
@@ -35,5 +37,39 @@ public class LongAdderTest {
 
         log.info("最后值:{}",count.longValue());
 
+    }
+
+    @Test
+    public void test2(){
+        Thread threadA = new Thread(() -> {
+            System.out.println("Thread A is running...");
+            try {
+                Thread.sleep(5000); // Sleep for 5 seconds
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+
+
+            System.out.println("Thread A finished.");
+        });
+
+        Thread threadB = new Thread(() -> {
+            System.out.println("Thread B started.");
+            try {
+                threadA.join(); // Wait for threadA to finish
+                System.out.println("Thread B waited for threadA and now continues.");
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        });
+
+        threadA.start();
+        threadB.start();
+
+        try {
+            System.in.read();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 }

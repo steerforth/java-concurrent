@@ -69,9 +69,11 @@ public class ReentrantLockTest {
 
         Thread t2 = new Thread(()->{
             try {
-                lock.lockInterruptibly();
+                LOGGER.info("t2 before start");
+                lock.lockInterruptibly();//尝试获得锁；如果线程中断，则抛出异常
+//                lock.lock();
                 LOGGER.info("t2 start");
-                TimeUnit.SECONDS.sleep(5);
+                TimeUnit.SECONDS.sleep(1);
                 LOGGER.info("t2 end");
             }catch (InterruptedException e){
                 LOGGER.info("t2 interrupted!");
@@ -81,6 +83,7 @@ public class ReentrantLockTest {
         });
         t2.start();
 
+        LOGGER.info("sleep");
         TimeUnit.SECONDS.sleep(5);
 
         t2.interrupt();
