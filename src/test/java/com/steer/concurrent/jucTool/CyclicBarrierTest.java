@@ -21,6 +21,12 @@ public class CyclicBarrierTest {
     public void test(){
         CyclicBarrier barrier = new CyclicBarrier(4,()->{
             log.info("=============满人开车============");
+            try {
+                Thread.sleep(2000);
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
+            log.info("=============满人开车2============");
         });
         //获取等待的线程
 //        barrier.getNumberWaiting();
@@ -30,6 +36,8 @@ public class CyclicBarrierTest {
                       log.info("等候开车");
                       barrier.await();
                       log.info("----------->出发");
+                      Thread.sleep(2000);
+                      log.info("----------->出发结束");
                   } catch (InterruptedException e) {
                       e.printStackTrace();
                   } catch (BrokenBarrierException e) {

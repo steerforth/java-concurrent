@@ -7,12 +7,13 @@ import org.slf4j.LoggerFactory;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.concurrent.locks.Condition;
+import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
 public class ReentrantLockConditionTest {
     private Logger log = LoggerFactory.getLogger(ReentrantLockConditionTest.class);
     @Test
-    public void test() throws IOException {
+    public void testBookStore() throws IOException {
         BookStore bookStore = new BookStore();
         Buyer[] buyers = new Buyer[5];
         Seller sellers;
@@ -27,6 +28,54 @@ public class ReentrantLockConditionTest {
         for(int i = 0; i < 5; i++) {
             buyers[i].start();
         }
+        System.in.read();
+    }
+
+    @Test
+    public void test2() throws IOException {
+        Lock lock = new ReentrantLock();
+        Condition condition1 = lock.newCondition();
+        Condition condition2 = lock.newCondition();
+
+        new Thread(() -> {
+            lock.lock();
+            try {
+                log.info("Thread2 await");
+                condition1.await(); // 等待 Thread 1 完成
+                log.info("Thread2 do");
+                condition2.signal(); // 唤醒等待 condition2 的线程
+                log.info("Thread2 signal");
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            finally { lock.unlock(); }
+        }).start();
+
+        new Thread(() -> {
+            lock.lock();
+            try {
+                log.info("Thread3 await");
+                condition2.await(); // 等待 Thread 2 完成
+                log.info("Thread3 do");
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            finally { lock.unlock(); }
+        }).start();
+        //这段代码放最前面就跑不动了？
+        new Thread(() -> {
+            lock.lock();
+            try {
+                log.info("Thread1 do");
+                try {
+                    Thread.sleep(2000);
+                } catch (InterruptedException e) {e.printStackTrace();}
+                condition1.signal(); // 唤醒等待 condition1 的线程
+                log.info("Thread1 signal");
+            }
+            finally { lock.unlock(); }
+        }).start();
+
         System.in.read();
     }
 

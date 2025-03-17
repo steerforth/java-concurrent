@@ -72,4 +72,47 @@ public class CountDownLatchTest {
         executor.shutdown();
         System.in.read();
     }
+
+
+    @Test
+    public void test2() throws IOException {
+        CountDownLatch latchOne = new CountDownLatch(4);
+
+        Thread[] threads = new Thread[8];
+        for(int i=0;i<4;i++){
+            threads[i] = new Thread(()->{
+                LOGGER.info("开始执行第1类任务");
+                try {
+                    Thread.sleep(5000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                LOGGER.info("第1类执行完毕，释放锁");
+                latchOne.countDown();
+            });
+        }
+
+        for(int i=4;i<8;i++){
+            threads[i] = new Thread(()->{
+                LOGGER.info("准备执行第2类任务");
+                try {
+                    latchOne.await();//
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                LOGGER.info("开始执行第2类任务");
+                try {
+                    Thread.sleep(1000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                LOGGER.info("第2类执行完毕");
+            });
+        }
+
+        for (int i = 0; i < 8; i++) {
+            threads[i].start();
+        }
+        System.in.read();
+    }
 }
