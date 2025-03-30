@@ -5,6 +5,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Semaphore;
 
 /**
@@ -17,6 +18,7 @@ public class SemaphoreTest {
 
     @Test
     public void test(){
+
         //同时允许2个线程执行
         Semaphore s = new Semaphore(2,true);
         new Thread(()->{

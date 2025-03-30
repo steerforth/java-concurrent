@@ -20,6 +20,11 @@ public class CountDownLatchTest {
     private Logger LOGGER = LoggerFactory.getLogger(CountDownLatchTest.class);
 
     private final CountDownLatch latch = new CountDownLatch(1);
+
+    /**
+     * 第1个任务先执行完成，然后2，3任务是并发执行的
+     * @throws IOException
+     */
     @Test
     public void test() throws IOException {
         ThreadPoolExecutor executor = new ThreadPoolExecutor(3,3,0, TimeUnit.MILLISECONDS,new LinkedBlockingQueue<>(1),new ThreadFactoryBuilder().setNameFormat(new StringBuilder().append("test-").append("-%d").toString()).build());
@@ -73,7 +78,10 @@ public class CountDownLatchTest {
         System.in.read();
     }
 
-
+    /**
+     * countDown减为0才会执行第2类任务
+     * @throws IOException
+     */
     @Test
     public void test2() throws IOException {
         CountDownLatch latchOne = new CountDownLatch(4);

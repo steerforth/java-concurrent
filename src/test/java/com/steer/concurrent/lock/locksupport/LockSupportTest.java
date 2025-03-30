@@ -16,7 +16,7 @@ public class LockSupportTest {
             for (int i = 0; i < 10; i++) {
                 log.info("值:{}",i);
                 if (i == 5){
-                    LockSupport.park();
+                    LockSupport.park();//阻塞
                 }
                 try {
                     TimeUnit.SECONDS.sleep(1);
@@ -117,6 +117,40 @@ public class LockSupportTest {
         }
         //等i=8,park后,把__count置为0,再调用unpark置为1就有效果了
         LockSupport.unpark(t);
+
+        System.in.read();
+    }
+
+    /**
+     * 顺序执行
+     * @throws IOException
+     */
+    @Test
+    public void test5() throws IOException {
+        Thread B = new Thread(() -> {
+            log.info("B准备执行");
+            LockSupport.park();
+            log.info("B开始执行");
+            try {
+                TimeUnit.SECONDS.sleep(2);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            log.info("B执行完成");
+        });
+
+        Thread A = new Thread(() -> {
+            log.info("A开始执行");
+            try {
+                TimeUnit.SECONDS.sleep(2);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            log.info("A执行完成");
+            LockSupport.unpark(B);
+        });
+        A.start();
+        B.start();
 
         System.in.read();
     }

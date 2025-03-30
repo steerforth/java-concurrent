@@ -10,6 +10,10 @@ import org.slf4j.LoggerFactory;
  */
 public class JoinTest {
     Logger log = LoggerFactory.getLogger(JoinTest.class);
+
+    /**
+     * 多线程按顺序执行
+     */
     @Test
     public void test(){
         log.info("主线程开启.");
@@ -29,9 +33,26 @@ public class JoinTest {
         });
         threadA.start();
 
+
+
+        Thread threadB = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                log.info("线程B准备.");
+                try {
+                    threadA.join();
+                    log.info("线程B开启.");
+                    Thread.sleep(200);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+                log.info("线程B执行完毕.");
+            }
+        });
+        threadB.start();
         log.info("主线程调用join之前");
         try {
-            threadA.join();    //调用join()
+            threadB.join();    //调用join()
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
